@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0a1628">
 <meta name="description" content="Qapalı poker klubu. Telegram ilə qoşul.">
 <title>Private Poker · Masaya otur</title>
 
@@ -22,235 +22,312 @@ src="https://www.facebook.com/tr?id=2704938816591826&ev=PageView&noscript=1" alt
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#000;min-height:100%}
+html,body{min-height:100%;background:#0a1628}
 body{
   min-height:100vh;min-height:100svh;
-  color:#f0e6d2;
+  color:#e8eef5;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:48px 24px;
-  gap:clamp(40px,6vw,64px);
-  background:radial-gradient(ellipse at 50% 45%,#1a1a1a 0%,#0a0a0a 55%,#000 100%);
+  gap:clamp(36px,5vw,56px);
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 20%,rgba(23,88,110,.35),transparent 55%),
+    radial-gradient(ellipse 60% 50% at 80% 85%,rgba(237,96,85,.18),transparent 50%),
+    radial-gradient(ellipse 100% 70% at 50% 100%,rgba(12,36,58,.6),transparent 70%),
+    linear-gradient(180deg,#0a1628 0%,#07101d 50%,#050a12 100%);
   overflow-x:hidden;
-}
-
-/* ===================================================================
-   POKER TABLE
-=================================================================== */
-.table-wrap{
   position:relative;
-  width:min(780px,100%);
-  aspect-ratio:3/2;
-  filter:drop-shadow(0 50px 70px rgba(0,0,0,.75));
 }
 
-/* Wooden rail */
-.rail{
-  position:absolute;inset:0;
-  border-radius:50%;
-  background:
-    radial-gradient(ellipse at 50% 30%,#5a3a1f 0%,#3d2614 55%,#1f1308 100%);
-  box-shadow:
-    inset 0 25px 50px rgba(0,0,0,.6),
-    inset 0 -20px 40px rgba(0,0,0,.5);
-}
-.rail::before{
-  /* Wood grain texture */
-  content:"";position:absolute;inset:0;border-radius:inherit;
-  background:
-    repeating-linear-gradient(90deg,
-      transparent 0 3px,
-      rgba(255,220,180,.025) 3px 5px,
-      transparent 5px 12px),
-    repeating-linear-gradient(90deg,
-      transparent 0 8px,
-      rgba(0,0,0,.06) 8px 10px,
-      transparent 10px 20px);
-  mask-image:radial-gradient(ellipse,#000 50%,transparent 85%);
+/* Subtle noise overlay */
+body::before{
+  content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Gold ring (outer) */
-.rail::after{
-  content:"";position:absolute;inset:6%;
-  border-radius:50%;
-  border:1.5px solid #c9a35a;
-  box-shadow:
-    0 0 0 1px rgba(201,163,90,.25),
-    inset 0 0 25px rgba(201,163,90,.08);
-}
-
-/* Felt */
-.felt{
-  position:absolute;inset:8%;
-  border-radius:50%;
-  background:
-    radial-gradient(ellipse at 50% 38%,#2d7a4a 0%,#1e5a36 45%,#113d23 85%,#0a2816 100%);
-  box-shadow:
-    inset 0 18px 45px rgba(0,0,0,.5),
-    inset 0 -12px 35px rgba(0,0,0,.45);
-  overflow:hidden;
-}
-/* Faint betting lines on felt */
-.felt::before{
-  content:"";position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 50% 50%,transparent 24%,rgba(255,255,255,.04) 24.3%,transparent 25%),
-    radial-gradient(circle at 50% 50%,transparent 32%,rgba(255,255,255,.03) 32.3%,transparent 33%),
-    radial-gradient(circle at 50% 50%,transparent 40%,rgba(255,255,255,.025) 40.3%,transparent 41%);
-}
-/* Top highlight */
-.felt::after{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 12%,rgba(255,255,255,.08),transparent 45%);
+/* Decorative ambient glow */
+body::after{
+  content:"";position:fixed;
+  top:30%;left:50%;
+  transform:translate(-50%,-50%);
+  width:min(800px,90vw);aspect-ratio:1;
+  background:radial-gradient(circle,rgba(44,180,170,.12) 0%,transparent 60%);
+  filter:blur(60px);
+  pointer-events:none;
+  z-index:0;
 }
 
 /* ===================================================================
-   CARDS (face-up fan: A♠ K♥ Q♦)
+   SCENE — cards in hand, chip stack below
+=================================================================== */
+.scene{
+  position:relative;
+  z-index:2;
+  width:min(620px,100%);
+  aspect-ratio:1.1/1;
+  filter:drop-shadow(0 40px 60px rgba(0,0,0,.55));
+}
+
+/* ===================================================================
+   CARDS — fan in hand (two hole cards)
 =================================================================== */
 .cards{
   position:absolute;
-  top:40%;left:50%;
-  transform:translate(-50%,-50%);
-  display:flex;
-  gap:clamp(4px,1vw,8px);
-  z-index:3;
+  top:5%;left:50%;
+  transform:translateX(-50%);
+  width:70%;
+  height:65%;
 }
 .card{
-  position:relative;
-  width:clamp(72px,11vw,110px);
-  aspect-ratio:5/7;
-  background:linear-gradient(145deg,#fdfaf0,#e8e1cd);
-  border-radius:8px;
-  box-shadow:
-    0 15px 25px rgba(0,0,0,.55),
-    0 2px 0 rgba(0,0,0,.4),
-    inset 0 0 0 1px rgba(0,0,0,.08);
-  font-family:Georgia,"Times New Roman",serif;
-  color:#1a1a1a;
-  overflow:hidden;
-}
-.card.red{color:#b02030}
-.card .corner{
   position:absolute;
+  top:0;left:50%;
+  width:60%;
+  aspect-ratio:5/7.2;
+  border-radius:14px;
+  background:
+    linear-gradient(145deg,#f8f3e3 0%,#ebe2c8 100%);
+  box-shadow:
+    0 24px 36px rgba(0,0,0,.6),
+    0 4px 8px rgba(0,0,0,.35),
+    inset 0 0 0 1px rgba(0,0,0,.08);
+  overflow:hidden;
+  font-family:Georgia,"Times New Roman",serif;
+}
+.card::before{
+  /* Inner embossed frame */
+  content:"";position:absolute;inset:8px;
+  border-radius:8px;
+  border:1px solid rgba(10,22,40,.08);
+  pointer-events:none;
+}
+.card .rank{
+  position:absolute;
+  font-size:clamp(28px,4.5vw,42px);
   font-weight:700;
-  font-size:clamp(14px,2vw,22px);
   line-height:.85;
-  text-align:center;
+  letter-spacing:-.02em;
 }
-.card .corner.tl{top:8%;left:10%}
-.card .corner.br{bottom:8%;right:10%;transform:rotate(180deg)}
-.card .corner small{
-  display:block;font-size:.8em;margin-top:2px;line-height:1;
-}
-.card .big{
-  position:absolute;inset:0;
-  display:grid;place-items:center;
-  font-size:clamp(42px,6.5vw,72px);
+.card .rank.tl{top:8%;left:11%}
+.card .rank.br{bottom:8%;right:11%;transform:rotate(180deg)}
+.card .rank small{
+  display:block;
+  font-size:.65em;
+  margin-top:3px;
   line-height:1;
 }
-.card.c1{transform:rotate(-8deg) translateY(4%)}
-.card.c2{transform:translateY(-3%);z-index:1}
-.card.c3{transform:rotate(8deg) translateY(4%)}
+.card .pip{
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  font-size:clamp(90px,14vw,140px);
+  line-height:1;
+}
+
+/* First card (A♠ — black) */
+.card.c1{
+  transform:translateX(-85%) rotate(-11deg);
+  color:#0f1a2e;
+}
+.card.c1 .pip{
+  text-shadow:0 2px 0 rgba(0,0,0,.05);
+}
+
+/* Second card (A♥ — coral red) */
+.card.c2{
+  transform:translateX(-15%) rotate(11deg);
+  color:#ed6055;
+}
+.card.c2 .pip{
+  color:#ed6055;
+  text-shadow:0 2px 0 rgba(237,96,85,.08);
+}
 
 /* ===================================================================
-   CHIP STACK
+   TABLE EDGE — curved teal felt below
+=================================================================== */
+.table-edge{
+  position:absolute;
+  bottom:-10%;left:-10%;right:-10%;
+  height:55%;
+  border-radius:50% 50% 0 0 / 60% 60% 0 0;
+  background:
+    radial-gradient(ellipse at 50% 20%,#2cb4aa 0%,#1a7a73 40%,#0f4a46 70%,#0a2e2b 100%);
+  box-shadow:
+    inset 0 15px 30px rgba(0,0,0,.4),
+    inset 0 -8px 20px rgba(0,0,0,.6),
+    0 -8px 25px rgba(44,180,170,.15);
+  z-index:1;
+}
+.table-edge::before{
+  /* Gold rim on top */
+  content:"";position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,210,140,.3) 15%,
+    rgba(255,210,140,.6) 50%,
+    rgba(255,210,140,.3) 85%,
+    transparent 100%);
+}
+.table-edge::after{
+  /* Subtle felt texture */
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:
+    radial-gradient(ellipse at 50% 20%,transparent 30%,rgba(255,255,255,.04) 30.3%,transparent 31%),
+    radial-gradient(ellipse at 50% 20%,transparent 50%,rgba(255,255,255,.03) 50.3%,transparent 51%);
+  opacity:.8;
+}
+
+/* ===================================================================
+   CHIP STACKS — three stacks of chips on the felt
 =================================================================== */
 .chips{
   position:absolute;
-  right:16%;bottom:22%;
-  width:clamp(52px,7.5vw,78px);
-  aspect-ratio:1;
+  bottom:5%;left:50%;
+  transform:translateX(-50%);
+  width:80%;
+  height:30%;
   z-index:2;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  padding:0 5%;
 }
-.chip-disk{
-  position:absolute;left:0;right:0;
-  height:17%;
+
+.stack{
+  position:relative;
+  width:clamp(55px,8.5vw,80px);
+  aspect-ratio:1;
+}
+.chip{
+  position:absolute;
+  left:0;right:0;
+  height:22%;
   border-radius:50%/100%;
-  background:linear-gradient(180deg,#2a0c14 0%,#120408 100%);
   box-shadow:
-    inset 0 2px 0 rgba(201,163,90,.35),
-    inset 0 -2px 0 rgba(0,0,0,.6);
+    inset 0 2px 0 rgba(255,255,255,.15),
+    inset 0 -2px 0 rgba(0,0,0,.5);
 }
-.chip-disk::before{
-  /* Gold edge notches */
+.chip::before{
+  /* Dashed edge pattern */
   content:"";position:absolute;inset:0;border-radius:inherit;
   background:repeating-linear-gradient(90deg,
     transparent 0 5px,
-    rgba(201,163,90,.95) 5px 7px,
+    rgba(255,255,255,.65) 5px 7px,
     transparent 7px 12px);
   mask-image:linear-gradient(180deg,transparent 30%,#000 30%,#000 70%,transparent 70%);
-  opacity:.85;
+  opacity:.5;
 }
-.chip-disk.top{
-  background:radial-gradient(ellipse at 50% 40%,#3a1018 0%,#1a0508 85%);
-  border:1px solid rgba(201,163,90,.45);
+.chip.top{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.2),
+    inset 0 -2px 4px rgba(0,0,0,.3),
+    0 4px 8px rgba(0,0,0,.4);
 }
-.chip-disk.top::after{
-  content:"♠";
+
+/* Teal stack (left) */
+.stack.teal .chip{
+  background:linear-gradient(180deg,#2cb4aa 0%,#0f4a46 100%);
+}
+.stack.teal .chip.top{
+  background:radial-gradient(ellipse at 50% 40%,#3dd4c8 0%,#1a7a73 70%);
+}
+.stack.teal .chip.top::after{
+  content:"";position:absolute;inset:35%;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffd28c 0%,#c99747 70%);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.3);
+}
+
+/* Coral stack (center, taller) */
+.stack.coral{
+  width:clamp(60px,9.5vw,88px);
+}
+.stack.coral .chip{
+  background:linear-gradient(180deg,#ed6055 0%,#8a2e26 100%);
+}
+.stack.coral .chip.top{
+  background:radial-gradient(ellipse at 50% 40%,#ff7a6d 0%,#b03d33 70%);
+}
+.stack.coral .chip.top::after{
+  content:"★";
   position:absolute;inset:0;
   display:grid;place-items:center;
-  color:#c9a35a;
+  color:#ffd28c;
   font-family:Georgia,serif;
-  font-size:48%;
-  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  font-size:45%;
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
 }
-.d1{bottom:0}.d2{bottom:13%}.d3{bottom:26%}.d4{bottom:39%}.d5{bottom:52%}.d6{bottom:65%}
 
-/* Single chip */
-.chip-single{
-  position:absolute;
-  left:22%;bottom:24%;
-  width:clamp(42px,6vw,66px);
-  aspect-ratio:1;
-  border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#8a1a30,#3d0812 70%,#1a0408);
-  box-shadow:
-    0 14px 24px rgba(0,0,0,.6),
-    inset 0 2px 4px rgba(255,255,255,.18),
-    inset 0 -4px 8px rgba(0,0,0,.4);
-  z-index:2;
-  transform:rotate(-12deg);
+/* Navy stack (right) */
+.stack.navy .chip{
+  background:linear-gradient(180deg,#1e3a5f 0%,#0a1628 100%);
 }
-.chip-single::before{
-  content:"";position:absolute;inset:16%;
-  border-radius:50%;
-  border:1.5px dashed rgba(201,163,90,.7);
+.stack.navy .chip.top{
+  background:radial-gradient(ellipse at 50% 40%,#2a4f7a 0%,#0f2340 70%);
 }
-.chip-single::after{
-  content:"";position:absolute;inset:34%;
+.stack.navy .chip.top::after{
+  content:"";position:absolute;inset:38%;
   border-radius:50%;
-  background:radial-gradient(circle,#c9a35a 0%,#8a6a28 70%);
-  box-shadow:inset 0 1px 2px rgba(255,255,255,.25);
+  background:radial-gradient(circle,#2cb4aa 0%,#0f4a46 70%);
 }
+
+/* Chip positions (vertical stacking) */
+.c1-d{bottom:0}
+.c2-d{bottom:18%}
+.c3-d{bottom:36%}
+.c4-d{bottom:54%}
+.c5-d{bottom:72%}
 
 /* ===================================================================
-   HEADLINE + CTA
+   COPY & CTA
 =================================================================== */
 .copy{
   text-align:center;
-  max-width:640px;
+  max-width:560px;
   width:100%;
   position:relative;
-  z-index:5;
+  z-index:3;
 }
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  color:#2cb4aa;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+.eyebrow::before,.eyebrow::after{
+  content:"";width:28px;height:1px;
+  background:linear-gradient(90deg,transparent,#2cb4aa);
+}
+.eyebrow::after{
+  background:linear-gradient(90deg,#2cb4aa,transparent);
+}
+
 h1{
   font-family:Georgia,"Times New Roman",serif;
-  font-size:clamp(34px,5.5vw,56px);
+  font-size:clamp(34px,5.8vw,58px);
   font-weight:600;
   line-height:1.05;
-  letter-spacing:-.02em;
-  color:#f8f2e2;
-  margin-bottom:20px;
+  letter-spacing:-.025em;
+  color:#f5f9fc;
+  margin-bottom:18px;
   text-wrap:balance;
 }
-h1 em{font-style:italic;color:#e4b074;font-weight:500}
+h1 em{
+  font-style:italic;
+  color:#ed6055;
+  font-weight:500;
+}
 
 .sub{
-  color:#a69f8e;
-  font-size:clamp(14px,1.3vw,17px);
-  line-height:1.55;
-  max-width:460px;
+  color:#8ba3c0;
+  font-size:clamp(14px,1.4vw,17px);
+  line-height:1.6;
+  max-width:440px;
   margin:0 auto 36px;
 }
 
@@ -260,33 +337,50 @@ h1 em{font-style:italic;color:#e4b074;font-weight:500}
   width:min(440px,100%);
   min-height:66px;
   padding:0 32px;
-  background:linear-gradient(180deg,#eacb8a 0%,#c9a35a 55%,#a1792c 100%);
-  color:#1a0f08;
-  font-size:14px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
-  border-radius:4px;
-  border:1px solid rgba(255,230,180,.45);
+  background:linear-gradient(135deg,#2cb4aa 0%,#1a7a73 100%);
+  color:#0a1628;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  border-radius:50px;
+  border:1px solid rgba(90,220,210,.5);
   text-decoration:none;
   box-shadow:
-    0 18px 40px rgba(201,163,90,.25),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 -1px 0 rgba(0,0,0,.3);
-  transition:transform .25s ease,filter .25s ease,box-shadow .25s ease;
+    0 18px 40px rgba(44,180,170,.3),
+    0 0 0 1px rgba(90,220,210,.15),
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset 0 -1px 0 rgba(0,0,0,.2);
+  transition:transform .3s ease,filter .3s ease,box-shadow .3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.cta::before{
+  /* Shimmer effect on hover */
+  content:"";position:absolute;
+  top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transition:left .6s ease;
 }
 .cta:hover{
   transform:translateY(-3px);
-  filter:brightness(1.08);
+  filter:brightness(1.1);
   box-shadow:
-    0 24px 48px rgba(201,163,90,.35),
-    inset 0 1px 0 rgba(255,255,255,.55),
-    inset 0 -1px 0 rgba(0,0,0,.3);
+    0 24px 48px rgba(44,180,170,.4),
+    0 0 0 1px rgba(90,220,210,.3),
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -1px 0 rgba(0,0,0,.2);
 }
-.cta svg{width:20px;height:20px;flex:none}
-.cta .arrow{font-size:22px;font-weight:400;transition:transform .25s ease}
-.cta:hover .arrow{transform:translateX(5px)}
+.cta:hover::before{left:100%}
+.cta svg{width:20px;height:20px;flex:none;position:relative;z-index:1}
+.cta span{position:relative;z-index:1}
+.cta .arrow{font-size:22px;font-weight:400;transition:transform .3s ease}
+.cta:hover .arrow{transform:translateX(6px)}
 
 .note{
   margin-top:20px;
-  color:#8a8273;
+  color:#5a7793;
   font-size:12px;
   letter-spacing:.08em;
 }
@@ -295,26 +389,29 @@ h1 em{font-style:italic;color:#e4b074;font-weight:500}
    MOBILE
 =================================================================== */
 @media(max-width:640px){
-  body{padding:28px 16px;gap:32px}
-  .table-wrap{aspect-ratio:3/2.1}
-  .card{width:clamp(60px,15vw,82px)}
-  .chips{right:14%;bottom:20%;width:min(13vw,62px)}
-  .chip-single{left:20%;bottom:22%;width:min(10vw,48px)}
-  h1{font-size:clamp(30px,8vw,42px)}
+  body{padding:28px 16px;gap:28px}
+  .scene{aspect-ratio:1/1.1;max-width:400px}
+  .cards{width:85%}
+  .card.c1{transform:translateX(-82%) rotate(-10deg)}
+  .card.c2{transform:translateX(-18%) rotate(10deg)}
+  .chips{width:90%;padding:0 3%}
+  .stack{width:clamp(48px,14vw,62px)}
+  .stack.coral{width:clamp(52px,16vw,68px)}
+  h1{font-size:clamp(28px,8vw,40px)}
   .sub{font-size:14px;margin-bottom:28px}
+  .eyebrow{font-size:10px;letter-spacing:.24em;margin-bottom:20px}
   .cta{
     width:100%;
     min-height:62px;
     font-size:12px;
     letter-spacing:.12em;
-    padding:0 22px;
+    padding:0 20px;
   }
 }
 @media(max-width:380px){
-  .table-wrap{aspect-ratio:3/2.25}
-  .card{width:min(17vw,70px)}
-  .cards{gap:3px}
-  h1{font-size:28px}
+  .scene{aspect-ratio:1/1.15}
+  h1{font-size:26px;line-height:1.1}
+  .eyebrow::before,.eyebrow::after{width:20px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -323,48 +420,56 @@ h1 em{font-style:italic;color:#e4b074;font-weight:500}
 </head>
 <body>
 
-  <!-- ======= POKER TABLE VISUAL ======= -->
-  <div class="table-wrap" aria-hidden="true">
-    <div class="rail">
-      <div class="felt">
+  <!-- ======= POKER SCENE ======= -->
+  <div class="scene" aria-hidden="true">
 
-        <div class="cards">
-          <div class="card c1">
-            <div class="corner tl">A<small>♠</small></div>
-            <div class="big">♠</div>
-            <div class="corner br">A<small>♠</small></div>
-          </div>
-          <div class="card c2 red">
-            <div class="corner tl">K<small>♥</small></div>
-            <div class="big">♥</div>
-            <div class="corner br">K<small>♥</small></div>
-          </div>
-          <div class="card c3 red">
-            <div class="corner tl">Q<small>♦</small></div>
-            <div class="big">♦</div>
-            <div class="corner br">Q<small>♦</small></div>
-          </div>
-        </div>
+    <!-- Felt / table edge -->
+    <div class="table-edge"></div>
 
-        <div class="chips">
-          <div class="chip-disk d1"></div>
-          <div class="chip-disk d2"></div>
-          <div class="chip-disk d3"></div>
-          <div class="chip-disk d4"></div>
-          <div class="chip-disk d5"></div>
-          <div class="chip-disk top d6"></div>
-        </div>
-
-        <div class="chip-single"></div>
-
+    <!-- Hole cards -->
+    <div class="cards">
+      <div class="card c1">
+        <div class="rank tl">A<small>♠</small></div>
+        <div class="pip">♠</div>
+        <div class="rank br">A<small>♠</small></div>
+      </div>
+      <div class="card c2">
+        <div class="rank tl">A<small>♥</small></div>
+        <div class="pip">♥</div>
+        <div class="rank br">A<small>♥</small></div>
       </div>
     </div>
+
+    <!-- Chip stacks -->
+    <div class="chips">
+      <div class="stack teal">
+        <div class="chip c1-d"></div>
+        <div class="chip c2-d"></div>
+        <div class="chip c3-d"></div>
+        <div class="chip top c4-d"></div>
+      </div>
+      <div class="stack coral">
+        <div class="chip c1-d"></div>
+        <div class="chip c2-d"></div>
+        <div class="chip c3-d"></div>
+        <div class="chip c4-d"></div>
+        <div class="chip top c5-d"></div>
+      </div>
+      <div class="stack navy">
+        <div class="chip c1-d"></div>
+        <div class="chip c2-d"></div>
+        <div class="chip top c3-d"></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ======= HEADLINE + CTA ======= -->
   <div class="copy">
-    <h1>Masaya otur. <em>Oyuna başla.</em></h1>
-    <p class="sub">Canlı masalar. Real rəqiblər. Telegram ilə bir kliklə giriş.</p>
+    <div class="eyebrow">Private Poker · Azərbaycan</div>
+
+    <h1>Əlində iki tuz. <em>Sırada növbə.</em></h1>
+    <p class="sub">Canlı masalar. Real rəqiblər. Telegram ilə bir toxunuşla giriş.</p>
 
     <a class="cta" id="join-btn"
        href="https://t.me/+m-IwYm3Z2Tk2Nzc6"
